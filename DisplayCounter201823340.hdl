@@ -1,0 +1,24 @@
+CHIP DisplayCounter201823340{
+    IN inc, reset;
+    OUT a,b,c,d,e,f,g;
+
+    PARTS:
+    Register(in[0..3]=nextValue, in[4..15]=false, load=inc, 
+             out=currentValue,      // for Inc16
+             out[0]=currentBit0,    // individual bits for Decoder
+             out[1]=currentBit1,
+             out[2]=currentBit2,
+             out[3]=currentBit3);
+
+    Inc16(in=currentValue, out[0..3]=incrementedValue);
+
+    Mux16(a[0..3]=incrementedValue, a[4..15]=false, b[0..15]=false, sel=reset, out[0..3]=nextValue);
+    
+    Decoder201823340(
+        A=currentBit0, 
+        B=currentBit1, 
+        C=currentBit2, 
+        D=currentBit3,
+        a=a, b=b, c=c, d=d, e=e, f=f, g=g
+    );
+}
